@@ -1,0 +1,73 @@
+query GetLibros {
+  libros {
+    autor
+    copias
+    isbn
+    titulo
+    categoria_libros {
+      categoria {
+        nombre
+      }
+    }
+  }
+}
+
+query GetUsuarios {
+  usuarios {
+    email
+    nombre
+    prestamos {
+      estado
+      fecha_devolucion
+      fecha_prestamo
+      libro {
+        titulo
+        isbn
+      }
+    }
+  }
+}
+
+query GetPrestamos {
+  prestamos {
+    estado
+    fecha_devolucion
+    fecha_prestamo
+    usuario {
+      email
+      nombre
+    }
+    libro {
+      isbn
+      titulo
+    }
+  }
+}
+
+query GetLibrosByTitulo($titulo: String = "") {
+  libros(where: { titulo: { _ilike: $titulo } }) {
+    autor
+    copias
+    isbn
+    titulo
+  }
+}
+
+query GetLibrosByAutor($autor: String = "") {
+  libros(where: { autor: { _ilike: $autor } }) {
+    autor
+    copias
+    isbn
+    titulo
+  }
+}
+
+query EstadoPrestamo($isbn: String = "", $email: String = "") {
+  prestamos(
+    where: {
+      _and: { isbn: { _eq: $isbn }, usuario: { email: { _eq: $email } } }
+    }
+  ) {
+    estado
+  }
+}

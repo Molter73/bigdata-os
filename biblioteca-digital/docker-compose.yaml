@@ -1,0 +1,91 @@
+services:
+  hasura-engine:
+    image: hasura/graphql-engine:v2.44.0
+    ports:
+      - 8080:8080
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: ${HASURA_DB_URL}/hasura
+      HASURA_GRAPHQL_DATABASE_URL: ${HASURA_DB_URL}/hasura
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_PASSWORD}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_METADATA_DEFAULTS: '{"backend_configs":{"dataconnector":{"Mongo":{"uri":"http://mongo-data-connector:3000"}}}}'
+      HASURA_GRAPHQL_MIGRATIONS_SERVER_TIMEOUT: 60
+      PG_DATABASE_URL: ${POSTGRES_URL}/biblioteca
+    restart: always
+    depends_on:
+      - sql-db
+      - nosql-db
+      - hasura-db
+      - mongo-data-connector
+
+  mongo-data-connector:
+    image: hasura/mongo-data-connector:v2.44.0
+    ports:
+      - 3000:3000
+
+  hasura-db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: ${HASURA_DB_PASSWORD}
+      POSTGRES_DB: hasura
+    ports:
+      - 5432:5432
+    volumes:
+      - hasura-db-data:/var/lib/postgresql/data
+    restart: always
+
+  nosql-db:
+    image: mongo:8.0.3
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - 27017:27017
+    volumes:
+      - nosql-db-data:/data/db
+      - ./mongodb/init-scripts:/docker-entrypoint-initdb.d:ro
+    restart: always
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGODB_URL}
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - nosql-db
+    restart: always
+    profiles: ["debug"]
+
+  sql-db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: biblioteca
+    volumes:
+      - sql-db-data:/var/lib/postgresql/data
+      - ./postgres/init-scripts:/docker-entrypoint-initdb.d:ro
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4:8.13.0
+    ports:
+      - 8082:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - sql-db
+    restart: always
+    profiles: ["debug"]
+
+volumes:
+  sql-db-data:
+  nosql-db-data:
+  hasura-db-data:

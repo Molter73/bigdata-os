@@ -1,0 +1,58 @@
+mutation InsertPrestamo(
+  $fecha_devolucion: date = ""
+  $fecha_prestamo: date = ""
+  $isbn: String = ""
+  $usuario_id: Int
+) {
+  insert_prestamos_one(
+    object: {
+      estado: "activo"
+      fecha_prestamo: $fecha_prestamo
+      isbn: $isbn
+      usuario_id: $usuario_id
+    }
+  ) {
+    id
+  }
+}
+
+mutation DevolucionPrestamo($isbn: String = "", $email: String = "") {
+  update_prestamos(
+    where: {
+      _and: { isbn: { _eq: $isbn }, usuario: { email: { _eq: $email } } }
+    }
+    _set: { estado: "devuelto" }
+  ) {
+    affected_rows
+  }
+}
+
+mutation CrearUsuario($object: usuarios_insert_input = {}) {
+  insert_usuarios_one(
+    object: $object
+    on_conflict: { constraint: usuarios_pkey }
+  ) {
+    email
+    id
+    nombre
+  }
+}
+
+mutation EliminarUsuario($id: Int) {
+  delete_usuarios(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+mutation UpdateUsuario(
+  $id: Int
+  $email: String = ""
+  $nombre: String = ""
+) {
+  update_usuarios(
+    where: { id: { _eq: $id } }
+    _set: { email: $email, nombre: $nombre }
+  ) {
+    affected_rows
+  }
+}

@@ -1,0 +1,485 @@
+{
+  "resource_version": 35,
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "default",
+        "kind": "postgres",
+        "tables": [],
+        "configuration": {
+          "connection_info": {
+            "database_url": {
+              "from_env": "HASURA_GRAPHQL_DATABASE_URL"
+            },
+            "isolation_level": "read-committed",
+            "pool_settings": {
+              "connection_lifetime": 600,
+              "idle_timeout": 180,
+              "max_connections": 50,
+              "retries": 1
+            },
+            "use_prepared_statements": true
+          }
+        }
+      },
+      {
+        "name": "biblioteca",
+        "kind": "postgres",
+        "tables": [
+          {
+            "table": {
+              "name": "categoria_libro",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "categoria",
+                "using": {
+                  "foreign_key_constraint_on": "categoria_id"
+                }
+              },
+              {
+                "name": "libro",
+                "using": {
+                  "foreign_key_constraint_on": "isbn"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "isbn"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "categoria_id",
+                    "isbn"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "usuario",
+                "permission": {
+                  "columns": [
+                    "isbn",
+                    "categoria_id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "isbn"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "categorias",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "categoria_libros",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "categoria_id",
+                    "table": {
+                      "name": "categoria_libro",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "nombre"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "nombre",
+                    "id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "usuario",
+                "permission": {
+                  "columns": [
+                    "nombre",
+                    "id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "nombre"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "libros",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "categoria_libros",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "isbn",
+                    "table": {
+                      "name": "categoria_libro",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "prestamos",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "isbn",
+                    "table": {
+                      "name": "prestamos",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "autor",
+                    "isbn",
+                    "titulo",
+                    "copias"
+                  ]
+                },
+                "comment": "Bibliotecario siempre puede agregar libros"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "autor",
+                    "isbn",
+                    "titulo",
+                    "copias"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "usuario",
+                "permission": {
+                  "columns": [
+                    "autor",
+                    "isbn",
+                    "titulo"
+                  ],
+                  "filter": {}
+                },
+                "comment": "Un usuario siempre puede visualizar libros"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "autor",
+                    "isbn",
+                    "titulo",
+                    "copias"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "prestamos",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "libro",
+                "using": {
+                  "foreign_key_constraint_on": "isbn"
+                }
+              },
+              {
+                "name": "usuario",
+                "using": {
+                  "foreign_key_constraint_on": "usuario_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "estado",
+                    "fecha_devolucion",
+                    "fecha_prestamo",
+                    "isbn",
+                    "usuario_id"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "isbn",
+                    "fecha_devolucion",
+                    "fecha_prestamo",
+                    "id",
+                    "usuario_id",
+                    "estado"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "usuario",
+                "permission": {
+                  "columns": [
+                    "estado",
+                    "fecha_devolucion",
+                    "fecha_prestamo",
+                    "id",
+                    "isbn",
+                    "usuario_id"
+                  ],
+                  "filter": {
+                    "usuario_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Un usuario sólo puede ver sus préstamos"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "estado",
+                    "fecha_devolucion",
+                    "fecha_prestamo",
+                    "isbn",
+                    "usuario_id"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "usuarios",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "prestamos",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "usuario_id",
+                    "table": {
+                      "name": "prestamos",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "email",
+                    "nombre"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "nombre",
+                    "id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "usuario",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "nombre"
+                  ],
+                  "filter": {
+                    "id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Un usuario sólo puede ver su perfil"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "nombre"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "bibliotecario",
+                "permission": {
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          }
+        ],
+        "configuration": {
+          "connection_info": {
+            "database_url": {
+              "from_env": "PG_DATABASE_URL"
+            },
+            "isolation_level": "read-committed",
+            "use_prepared_statements": false
+          }
+        }
+      },
+      {
+        "name": "biblioteca-mongo",
+        "kind": "Mongo",
+        "tables": [],
+        "configuration": {
+          "template": null,
+          "timeout": null,
+          "value": {
+            "connection": "mongodb://mongo:mongo@nosql-db",
+            "db": "biblioteca"
+          }
+        }
+      }
+    ]
+  }
+}
