@@ -1,3 +1,12 @@
 # Python stuff
 .venv/
 __pycache__/
+
+# Java things
+target/
+.settings/
+.classpath
+.project
+
+# Data directory
+data/
