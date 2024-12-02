@@ -1,4 +1,4 @@
-package hadoop_players;
+package avg_height;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,12 +19,6 @@ public class App {
 			input = input_;
 		}
 
-		private void eatWhitespace() {
-			while (Character.isWhitespace(input.charAt(position))) {
-				position++;
-			}
-		}
-
 		public boolean done() {
 			return position >= input.length();
 		}
@@ -35,8 +29,6 @@ public class App {
 			}
 
 			String res = "";
-			eatWhitespace();
-
 			if (input.charAt(position) == '"') {
 				position++;
 				int offset = position;
@@ -48,7 +40,7 @@ public class App {
 				position = offset + 1; // update position, skipping the closing quote
 			} else {
 				int offset = position + 1;
-				while (offset < input.length() && input.charAt(offset) != ',' && input.charAt(offset) != '\n') {
+				while (offset < input.length() && input.charAt(offset) != ',') {
 					offset++;
 				}
 				res = input.substring(position, offset);
@@ -72,39 +64,39 @@ public class App {
 				case "CB":
 					return new Text("Cornerback");
 				case "DB":
-					return new Text("Defensive Back");
+					return new Text("DefensiveBack");
 				case "DE":
-					return new Text("Defensive End");
+					return new Text("DefensiveEnd");
 				case "DT":
-					return new Text("Defensive Tackle");
+					return new Text("DefensiveTackle");
 				case "FB":
 					return new Text("Fullback");
 				case "FS":
-					return new Text("Free Safety");
+					return new Text("FreeSafety");
 				case "G":
 					return new Text("Gunner");
 				case "ILB":
-					return new Text("Inside Linebacker");
+					return new Text("InsideLinebacker");
 				case "LS":
-					return new Text("Long Snapper");
+					return new Text("LongSnapper");
 				case "MLB":
-					return new Text("Middle Linebacker");
+					return new Text("MiddleLinebacker");
 				case "NT":
-					return new Text("Nose Tackle");
+					return new Text("NoseTackle");
 				case "OLB":
-					return new Text("Outside Linebacker");
+					return new Text("OutsideLinebacker");
 				case "QB":
 					return new Text("Quarterback");
 				case "RB":
-					return new Text("Running Back");
+					return new Text("RunningBack");
 				case "SS":
 					return new Text("Strong Safety");
 				case "T":
 					return new Text("Tackle");
 				case "TE":
-					return new Text("Tight End");
+					return new Text("TightEnd");
 				case "WR":
-					return new Text("Wide Receiver");
+					return new Text("WideReceiver");
 				default:
 					return new Text("Unknown");
 			}

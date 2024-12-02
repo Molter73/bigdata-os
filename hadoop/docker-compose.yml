@@ -11,8 +11,9 @@ services:
       - 9000:9000
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
-      - ./data/:/tmp/data:ro
-      - ./target:/tmp/target:ro
+      - ./data/:/data:ro
+      - ./java/target:/avg-height:ro
+      - ./rust/target:/month-counter:ro
     environment:
       - CLUSTER_NAME=test
     env_file:

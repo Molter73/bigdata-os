@@ -10,3 +10,8 @@ target/
 
 # Data directory
 data/
+
+# Rust BTW
+**/target
+**/*.rs.bk
+**/Cargo.lock

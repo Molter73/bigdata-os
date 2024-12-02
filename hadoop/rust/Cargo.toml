@@ -1,0 +1,18 @@
+[package]
+name = "month-counter"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+chrono = "0.4.38"
+efflux = "2.0"
+
+[[bin]]
+doc = false
+name = "month-counter_mapper"
+path = "src/mapper.rs"
+
+[[bin]]
+doc = false
+name = "month-counter_reducer"
+path = "src/reducer.rs"
